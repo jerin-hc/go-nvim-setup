@@ -76,10 +76,9 @@ cmp.setup({
 EOF
 
 " ============================
-" LSP (gopls) Setup
+" LSP (gopls & ts_ls) Setup
 " ============================
 lua << EOF
-local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 local on_attach = function(_, bufnr)
@@ -91,12 +90,11 @@ local on_attach = function(_, bufnr)
   vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
   vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
   vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+  vim.keymap.set("n", "<leader>x", ":lclose<CR>", opts)
 end
 
-lspconfig.gopls.setup({
-  on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
+vim.lsp.config("gopls", {
+settings = {
     gopls = {
       gofumpt = true,
       staticcheck = true,
@@ -104,6 +102,13 @@ lspconfig.gopls.setup({
     },
   },
 })
+
+vim.lsp.enable("gopls")
+vim.lsp.config("ts_ls", {
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+vim.lsp.enable("ts_ls")
 EOF
 
 lua << EOF
